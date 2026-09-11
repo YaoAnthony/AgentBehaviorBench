@@ -42,6 +42,7 @@ Agent source was changed to reach that upstream.
 | 12 | deepagents-research | langchain-ai/deepagents | agent ok / ABB rejects | Anthropic-native; rewrite verified end to end (api.anthropic.com/v1/messages → target /messages, model swapped). Answered from 2 model calls and 1 search, but its search tool fetches result pages, and that blocked request fails the trace |
 | 13 | waku-agent | ShenSeanChen/waku-agent | succeeded | Not a LangGraph Agent: its own loop over the provider SDKs, driven through Waku(Settings()).respond(). 2 chat completions; framework spans absent by construction |
 | 14 | event-deep-research | bernatsampera/event-deep-research | blocked, disabled | Upstream hardcodes reasoning="False" into every model; ChatOpenAI requires a dict, so its OpenAI path cannot construct a model. Registered with enabled = false |
+| 15 | adaptive-rag | dhruvsinghal09/Adaptive-Rag | blocked, disabled | Needs `/v1/embeddings`; no embeddings protocol plugin exists and the target rewrites every route to one model name. Registered with enabled = false |
 
 ## Not onboarded in this batch
 
@@ -110,6 +111,11 @@ found on:
   by the first note above. `langchain-anthropic` counts tokens whenever a context-clipping
   middleware is in play, so this reaches any Anthropic Agent with context management, such
   as candidate 12.
+- There is no way to declare an embeddings call. `protocol_plugin` is validated against the
+  protocol registry, which has no embeddings entry, and `OpenRouterTarget.prepare_request`
+  substitutes the single run model into every routed request, so one model name would have
+  to serve both chat and embeddings. Any RAG Agent that builds its own index hits this;
+  candidate 15 does.
 - The adapter factory registers one framework, `langgraph`, and the observer factory is
   keyed to the same name. An Agent that does not use LangChain must still be registered as
   `langgraph` and must still install `langchain-core`, or its worker fails at import. Seen

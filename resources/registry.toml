@@ -131,8 +131,10 @@ case = 1
 
 [[agents]]
 agent_id = "adaptive-rag"
+# Needs an embeddings call, which the Interceptor has no protocol plugin for. See the
+# unit's requirement.md.
 path = "resources/agents/15-adaptive-rag"
-enabled = true
+enabled = false
 status = "adapting"
 framework = "langgraph"
 source = "https://github.com/dhruvsinghal09/Adaptive-Rag"
