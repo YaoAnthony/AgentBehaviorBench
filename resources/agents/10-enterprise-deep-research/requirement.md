@@ -38,19 +38,16 @@ This Docker configuration is one-shot: separate SDK Inputs do not share memory.
 
 ## Verification status
 
-The adapter is exercised and its egress is clean: an observed run reached 25 model
-request/response pairs and 1 Tavily search with no blocked requests, and ended only because
-LangGraph's default `recursion_limit` of 25 stopped the research loop. The binding now runs
-at 100, the value upstream's own benchmark harness uses, and a run at that limit was still
-in progress — past 88 interceptor events, still with no blocked request — when this unit was
-committed. A completed end-to-end `observe` is therefore not yet recorded for this Agent,
-unlike the others accepted in this batch.
+`observe` completed: status `succeeded`, 31 model request/response pairs, 21 Tavily
+searches, 511 OTel spans and a 36k-character report, with no blocked requests at all. An
+earlier run stopped at LangGraph's default `recursion_limit` of 25; the binding now runs at
+100, the value upstream's own benchmark harness uses.
 
-Three configuration facts were needed to get this far, all outside Agent source: a
+Three configuration facts were needed, all outside Agent source: a
 `constraints.txt` pinning the LangChain family below 1.0, `langchain-mcp-adapters` below
 0.2 and `mcp` below 2 (upstream leaves those open and the new majors break its imports);
 `LLM_PROVIDER`/`SEARCH_API` selecting upstream's OpenAI and Tavily paths; and the provider
 named in the input state, because the graph falls back to Google Vertex when the state does
 not carry one, which fails with `GOOGLE_CLOUD_PROJECT is not set`.
 
-Status: adapting, pending a completed observe run.
+Status: adapting. Certification against the official Judge has not been run.
