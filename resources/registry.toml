@@ -108,3 +108,21 @@ status = "adapting"
 framework = "langgraph"
 source = "https://github.com/langchain-ai/deepagents"
 case = 1
+
+[[agents]]
+agent_id = "waku-agent"
+path = "resources/agents/13-waku-agent"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/ShenSeanChen/waku-agent"
+case = 1
+
+[[agents]]
+agent_id = "event-deep-research"
+path = "resources/agents/14-event-deep-research"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/bernatsampera/event-deep-research"
+case = 1
