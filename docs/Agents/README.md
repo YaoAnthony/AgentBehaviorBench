@@ -10,6 +10,7 @@ Use these pages instead of reading the full reference by default.
 | [Certification](./Certify.md) | You need to understand `certify`, `ready`, Judge failures, or result artifacts. |
 | [Troubleshooting](./Troubleshooting.md) | You have a concrete error message. |
 | [Reference](./Reference.md) | You need the original complete onboarding reference. |
+| [Multi-turn onboarding batch](./Multiturn-Onboarding.md) | You want the status of the screened multi-turn Agents, what each one needed, and what blocks the rest. |
 
 Preferred flow:
 

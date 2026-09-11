@@ -37,6 +37,7 @@ Agent source was changed to reach that upstream.
 | 05 | article-explainer | duartecaldascardoso/article-explainer | succeeded | 5-agent swarm, 47 OTel spans, 2.5k-char answer from the default explainer |
 | 07 | ecommerce-recommender | bcefghj/multi-agent-ecommerce-system | succeeded | Native provider is MiniMax, not OpenAI; 3 chat completions, 43 OTel spans. Domain-locked pipeline |
 | 06 | deep-research-agent | tarun7r/deep-research-agent | agent ok / ABB rejects | 20 chat completions, 13 Tavily searches, 607 OTel spans, 34k-char report; observe fails because upstream's crawl tool hits undeclared hosts and a blocked request is emitted as `llm_error` |
+| 08 | langgraph-fullstack | langchain-ai/langgraph-fullstack-python | succeeded | Anthropic-native: `anthropic-messages` route with `anthropic-api-key` auth, forwarded to an Anthropic-format target. 1 message call, 27 OTel spans |
 | 09 | decompai | louisgthier/decompai | succeeded | 1 streamed chat completion (499 chunks), 31 OTel spans, 5.3k-char answer; tiktoken cache warmed at build and Gradio analytics disabled so no undeclared egress |
 | 13 | waku-agent | ShenSeanChen/waku-agent | succeeded | Not a LangGraph Agent: its own loop over the provider SDKs, driven through Waku(Settings()).respond(). 2 chat completions; framework spans absent by construction |
 | 14 | event-deep-research | bernatsampera/event-deep-research | blocked, disabled | Upstream hardcodes reasoning="False" into every model; ChatOpenAI requires a dict, so its OpenAI path cannot construct a model. Registered with enabled = false |
@@ -72,6 +73,13 @@ called out, because a stub is not an onboarding.
 | skygazer42/Weaver | Postgres/pgvector, ChromaDB, e2b, Playwright |
 | YUHAO-corn/manufacturing-agents | ChromaDB, MongoDB, Redis and market data |
 | CopilotKit/scene-creator-copilot | Gemini-native wire format; needs a target that serves Gemini requests |
+
+Why a database-backed Agent cannot simply bring its own service: the agent container runs
+`--read-only` with `--cap-drop=ALL`, a non-root user, 1 GB of memory and a 64 MB `/tmp`
+tmpfs, and ABB starts exactly one container per Agent beside the Interceptor. Installing
+Postgres, Neo4j or Mongo into the image and starting it from `launch.argv` fails on the
+writable data directory alone, so these Agents need a runtime feature, not a cleverer
+Dockerfile.
 
 Two paths would move most of these forward, in ABB rather than in Agent source:
 
