@@ -1,0 +1,54 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "ecommerce-recommender"
+display_name = "07 E-Commerce Recommendation Pipeline"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/bcefghj/multi-agent-ecommerce-system"
+revision = "faf0fd8309c550426f3b2cce057dd4566e209e09"
+downloaded_on = "2026-09-11"
+radar_id = "056"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 600
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "recommender.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "购物场景/需求", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+# Upstream's own provider is MiniMax, read from ECOM_LLM_API_KEY by pydantic-settings.
+[[llm_interception.credentials]]
+id = "minimax"
+agent_env = "ECOM_LLM_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "minimax-chat"
+host_patterns = ["api.minimax.chat"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "minimax"

@@ -35,3 +35,4 @@ Agent source was changed to reach that upstream.
 | 03 | autoresearch-agents | hwchase17/autoresearch-agents | succeeded | 3 chat completions, 103 OTel spans, calculator tool used |
 | 04 | langchain-streamlit-template | hwchase17/langchain-streamlit-template | succeeded | 2 chat completions, 43 OTel spans; LangGraph pinned to the 0.2 line the checkout was written against |
 | 05 | article-explainer | duartecaldascardoso/article-explainer | succeeded | 5-agent swarm, 47 OTel spans, 2.5k-char answer from the default explainer |
+| 07 | ecommerce-recommender | bcefghj/multi-agent-ecommerce-system | succeeded | Native provider is MiniMax, not OpenAI; 3 chat completions, 43 OTel spans. Domain-locked pipeline |

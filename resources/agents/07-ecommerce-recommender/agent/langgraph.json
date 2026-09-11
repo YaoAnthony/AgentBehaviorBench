@@ -1,0 +1,7 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "dependencies": ["./python"],
+  "graphs": {
+    "agent": "./python/orchestrator/graph.py:build_recommendation_graph"
+  }
+}
