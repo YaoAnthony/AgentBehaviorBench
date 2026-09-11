@@ -27,3 +27,30 @@ status = "adapting"
 framework = "langgraph"
 source = "https://github.com/hwchase17/autoresearch-agents"
 case = 1
+
+[[agents]]
+agent_id = "langchain-streamlit-template"
+path = "resources/agents/04-langchain-streamlit-template"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/hwchase17/langchain-streamlit-template"
+case = 1
+
+[[agents]]
+agent_id = "article-explainer"
+path = "resources/agents/05-article-explainer"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/duartecaldascardoso/article-explainer"
+case = 1
+
+[[agents]]
+agent_id = "deep-research-agent"
+path = "resources/agents/06-deep-research-agent"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/tarun7r/deep-research-agent"
+case = 1
