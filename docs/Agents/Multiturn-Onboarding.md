@@ -36,3 +36,4 @@ Agent source was changed to reach that upstream.
 | 04 | langchain-streamlit-template | hwchase17/langchain-streamlit-template | succeeded | 2 chat completions, 43 OTel spans; LangGraph pinned to the 0.2 line the checkout was written against |
 | 05 | article-explainer | duartecaldascardoso/article-explainer | succeeded | 5-agent swarm, 47 OTel spans, 2.5k-char answer from the default explainer |
 | 07 | ecommerce-recommender | bcefghj/multi-agent-ecommerce-system | succeeded | Native provider is MiniMax, not OpenAI; 3 chat completions, 43 OTel spans. Domain-locked pipeline |
+| 06 | deep-research-agent | tarun7r/deep-research-agent | agent ok / ABB rejects | 20 chat completions, 13 Tavily searches, 607 OTel spans, 34k-char report; observe fails because upstream's crawl tool hits undeclared hosts and a blocked request is emitted as `llm_error` |

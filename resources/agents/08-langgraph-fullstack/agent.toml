@@ -1,0 +1,53 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "langgraph-fullstack"
+display_name = "08 LangGraph Fullstack Chatbot"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/langchain-ai/langgraph-fullstack-python"
+revision = "64c7af2aaddf3037e233f83b61fda621d5cd86cb"
+downloaded_on = "2026-09-11"
+radar_id = "148"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 300
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "fullstack_chat.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "用户消息", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "anthropic"
+agent_env = "ANTHROPIC_API_KEY"
+auth_plugin = "anthropic-api-key"
+
+[[llm_interception.routes]]
+id = "anthropic-messages"
+host_patterns = ["api.anthropic.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/messages"]
+protocol_plugin = "anthropic-messages"
+credential = "anthropic"

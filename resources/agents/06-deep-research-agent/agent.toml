@@ -13,6 +13,7 @@ radar_id = "133"
 type = "docker"
 execution = "oneshot"
 timeout_sec = 900
+secret_env_keys = ["TAVILY_API_KEY"]
 
 [build]
 context = "."
@@ -52,17 +53,9 @@ path_patterns = ["/v1/chat/completions"]
 protocol_plugin = "openai-chat"
 credential = "openai"
 
-# Upstream search provider: DuckDuckGo through the ddgs client.
+# Upstream search provider: Tavily, selected through SEARCH_PROVIDER.
 [[llm_interception.tool_routes]]
-host_patterns = ["*.duckduckgo.com", "duckduckgo.com"]
+host_patterns = ["api.tavily.com"]
 ports = [443]
-methods = ["GET", "POST"]
-path_patterns = ["/*"]
-
-# Upstream fetches the pages its searches return, so the crawl target set is the
-# open web rather than one service. Declared explicitly instead of silently failing.
-[[llm_interception.tool_routes]]
-host_patterns = ["*"]
-ports = [443]
-methods = ["GET"]
-path_patterns = ["/*"]
+methods = ["POST"]
+path_patterns = ["/search"]

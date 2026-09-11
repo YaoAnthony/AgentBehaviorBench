@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     MODEL_PROVIDER=openai \
     MODEL_NAME=gpt-4o-mini \
     SUMMARIZATION_MODEL=gpt-4o-mini \
-    SEARCH_PROVIDER=duckduckgo
+    SEARCH_PROVIDER=tavily
 WORKDIR /opt/agent
 COPY agent/ ./agent/
 RUN python -m pip install --no-cache-dir -r agent/requirements.txt 'opentelemetry-sdk>=1.30,<2' \
