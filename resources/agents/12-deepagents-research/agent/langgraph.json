@@ -1,0 +1,7 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "dependencies": ["./examples/deep_research"],
+  "graphs": {
+    "research": "./examples/deep_research/agent.py:agent"
+  }
+}

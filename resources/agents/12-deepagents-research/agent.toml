@@ -1,0 +1,61 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "deepagents-research"
+display_name = "12 DeepAgents Deep Research"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/langchain-ai/deepagents"
+revision = "40359ec683eaff3a67b39d3f6b3003e70db9ec4d"
+downloaded_on = "2026-09-11"
+radar_id = "004"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 1200
+secret_env_keys = ["TAVILY_API_KEY"]
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "research"
+input_key = "message"
+output_key = "answer"
+binding = "deep_research.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "研究主题", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "anthropic"
+agent_env = "ANTHROPIC_API_KEY"
+auth_plugin = "anthropic-api-key"
+
+[[llm_interception.routes]]
+id = "anthropic-messages"
+host_patterns = ["api.anthropic.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/messages", "/v1/messages/count_tokens"]
+protocol_plugin = "anthropic-messages"
+credential = "anthropic"
+
+# Upstream research tool.
+[[llm_interception.tool_routes]]
+host_patterns = ["api.tavily.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/search"]
