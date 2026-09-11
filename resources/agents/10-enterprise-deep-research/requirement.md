@@ -28,7 +28,8 @@ blocks it.
 Two upstream demo scripts, `math_client.py` and `math_client_new.py`, carry a hardcoded
 OpenAI key as a default value. They are standalone MCP examples that nothing in `src/`
 imports, and the onboarding rules forbid vendoring credentials, so they are not included in
-this unit. Everything the graph uses is unchanged.
+this unit. The 4 MB upstream tech-report PDF is left out for size. Everything the graph
+uses is unchanged.
 
 The binding runs the graph at `recursion_limit` 100, the value upstream's own benchmark
 harness uses; LangGraph's default of 25 ends the research loop before it reaches a stop
