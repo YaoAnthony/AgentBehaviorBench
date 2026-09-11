@@ -1,0 +1,68 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "event-deep-research"
+display_name = "14 Event Deep Research"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/bernatsampera/event-deep-research"
+revision = "b5b82fcbddb874d9beee1bca29aea362589efbf2"
+downloaded_on = "2026-09-11"
+radar_id = "099"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 1200
+secret_env_keys = ["TAVILY_API_KEY"]
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "supervisor"
+input_key = "message"
+output_key = "answer"
+binding = "timeline.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "要研究的人物", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "openai"
+agent_env = "OPENAI_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "openai-chat"
+host_patterns = ["api.openai.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "openai"
+
+# Upstream search service.
+[[llm_interception.tool_routes]]
+host_patterns = ["api.tavily.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/search"]
+
+# Upstream page crawler; it scrapes through Firecrawl rather than fetching pages itself.
+[[llm_interception.tool_routes]]
+host_patterns = ["api.firecrawl.dev"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v0/scrape", "/v1/scrape"]

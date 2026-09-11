@@ -1,0 +1,15 @@
+# Upstream caps langchain-core below 1.0 but leaves the integration packages open,
+# so a fresh resolve pulls their 1.x releases, which import langchain_core.messages
+# .content and fail at import. These constraints keep the whole family on the 0.3 line
+# the checkout was written against; nothing in Agent source is changed.
+langchain<1.0
+langchain-core<1.0
+langchain-openai<1.0
+langchain-anthropic<1.0
+langchain-community<1.0
+langchain-text-splitters<1.0
+langchain-google-genai<3.0
+langchain-groq<1.0
+langchain-mcp-adapters<0.2  # 0.2 imports langchain_core.messages.content, which only exists in core 1.x
+# Upstream's MCP tooling imports mcp.server.fastmcp, renamed in the mcp 2.x SDK.
+mcp<2

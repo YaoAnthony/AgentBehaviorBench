@@ -1,0 +1,61 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "deep-research-agent"
+display_name = "06 Deep Research Agent"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/tarun7r/deep-research-agent"
+revision = "a974b4cd03436d37d459170f2a524dace13d8482"
+downloaded_on = "2026-09-11"
+radar_id = "133"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 900
+secret_env_keys = ["TAVILY_API_KEY"]
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "research.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "研究主题", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "openai"
+agent_env = "OPENAI_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "openai-chat"
+host_patterns = ["api.openai.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "openai"
+
+# Upstream search provider: Tavily, selected through SEARCH_PROVIDER.
+[[llm_interception.tool_routes]]
+host_patterns = ["api.tavily.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/search"]

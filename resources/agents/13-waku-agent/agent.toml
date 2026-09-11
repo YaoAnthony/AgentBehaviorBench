@@ -1,0 +1,53 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "waku-agent"
+display_name = "13 Waku Agent"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/ShenSeanChen/waku-agent"
+revision = "21486b39ca2b59cf3a616159139712f4bef0914c"
+downloaded_on = "2026-09-11"
+radar_id = "020"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 600
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "waku_loop.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "用户消息", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "openai"
+agent_env = "OPENAI_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "openai-chat"
+host_patterns = ["api.openai.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "openai"

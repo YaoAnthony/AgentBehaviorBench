@@ -1,0 +1,61 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "ra-aid"
+display_name = "11 RA.Aid Research Agent"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/ai-christianson/RA.Aid"
+revision = "e71bb83dcfdf8796d41c746ad99bf4838d1d5914"
+downloaded_on = "2026-09-11"
+radar_id = "016"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 1200
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "ra_aid_cli.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "研究任务", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "openai"
+agent_env = "OPENAI_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "openai-chat"
+host_patterns = ["api.openai.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "openai"
+
+# Upstream checks for a newer release at startup (ra_aid/version_check.py). Declared so
+# it is a normal tool call rather than blocked egress, which would fail the whole trace.
+[[llm_interception.tool_routes]]
+host_patterns = ["docs.ra-aid.ai"]
+ports = [443]
+methods = ["GET"]
+path_patterns = ["/version.json"]

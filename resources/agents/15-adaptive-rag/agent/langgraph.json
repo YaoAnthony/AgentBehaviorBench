@@ -1,0 +1,7 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./src/rag/graph_builder.py:builder"
+  }
+}
