@@ -1,0 +1,10 @@
+# Upstream requires langgraph>=0.6.7 and langchain>=0.3.27 with no upper bounds. Pin the
+# line the checkout was written against so a fresh resolve cannot pull an incompatible
+# 1.x release; nothing in Agent source is changed.
+langchain<1.0
+langchain-core<1.0
+langchain-openai<1.0
+langchain-google-genai<3.0
+langchain-ollama<1.0
+langchain-tavily<1.0
+langgraph<1.0

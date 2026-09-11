@@ -120,8 +120,10 @@ case = 1
 
 [[agents]]
 agent_id = "event-deep-research"
+# Upstream's OpenAI path passes reasoning="False" into ChatOpenAI, which requires a
+# dictionary, so the Agent cannot construct its model. See the unit's requirement.md.
 path = "resources/agents/14-event-deep-research"
-enabled = true
+enabled = false
 status = "adapting"
 framework = "langgraph"
 source = "https://github.com/bernatsampera/event-deep-research"
