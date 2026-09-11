@@ -1,0 +1,53 @@
+schema_version = "defuzex-bench.agent.v2"
+agent_id = "decompai"
+display_name = "09 DecompAI Reverse Engineering Agent"
+framework = "langgraph"
+
+[source]
+repository = "https://github.com/louisgthier/decompai"
+revision = "0c2398c09e318be1bb6f6a52d13e572fac7c519b"
+downloaded_on = "2026-09-11"
+radar_id = "111"
+
+[runtime]
+type = "docker"
+execution = "oneshot"
+timeout_sec = 600
+
+[build]
+context = "."
+dockerfile = "Dockerfile"
+
+[launch]
+argv = ["python", "-m", "agentbench.runtime.agentcontainer.worker"]
+workdir = "/opt/agent"
+
+[adapter]
+type = "langgraph"
+mode = "in_process"
+config = "langgraph.json"
+graph_id = "agent"
+input_key = "message"
+output_key = "answer"
+binding = "decompai.py:create_graph"
+
+[observe]
+input_fields = [{ name = "message", label = "用户消息", required = true }]
+
+[llm_interception]
+required = true
+trust_plugin = "pem-env"
+
+[[llm_interception.credentials]]
+id = "openai"
+agent_env = "OPENAI_API_KEY"
+auth_plugin = "bearer-token"
+
+[[llm_interception.routes]]
+id = "openai-chat"
+host_patterns = ["api.openai.com"]
+ports = [443]
+methods = ["POST"]
+path_patterns = ["/v1/chat/completions"]
+protocol_plugin = "openai-chat"
+credential = "openai"

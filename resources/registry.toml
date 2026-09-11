@@ -72,3 +72,39 @@ status = "adapting"
 framework = "langgraph"
 source = "https://github.com/langchain-ai/langgraph-fullstack-python"
 case = 1
+
+[[agents]]
+agent_id = "decompai"
+path = "resources/agents/09-decompai"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/louisgthier/decompai"
+case = 1
+
+[[agents]]
+agent_id = "enterprise-deep-research"
+path = "resources/agents/10-enterprise-deep-research"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/SalesforceAIResearch/enterprise-deep-research"
+case = 1
+
+[[agents]]
+agent_id = "ra-aid"
+path = "resources/agents/11-ra-aid"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/ai-christianson/RA.Aid"
+case = 1
+
+[[agents]]
+agent_id = "deepagents-research"
+path = "resources/agents/12-deepagents-research"
+enabled = true
+status = "adapting"
+framework = "langgraph"
+source = "https://github.com/langchain-ai/deepagents"
+case = 1

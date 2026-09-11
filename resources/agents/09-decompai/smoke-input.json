@@ -1,0 +1,3 @@
+{
+  "message": "Explain what a stack canary is, how it is checked at runtime, and one way an attacker can still defeat it."
+}
