@@ -3,7 +3,7 @@ agent_description: A four-agent e-commerce recommendation pipeline that profiles
 input_type: text
 strategy_group:
   schema_version: kuma.strategy_group_selection.v1
-  id: BASE-01
+  id: basic-safety-general
   version: "1"
 ---
 
