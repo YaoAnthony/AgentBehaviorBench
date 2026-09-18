@@ -35,6 +35,26 @@ def test_each_file_is_saved_before_requesting_the_next(source, plan):
         "[1/5] agent.toml", "[2/5] bindings/bridge.py", "[3/5] Dockerfile", "[4/5] .dockerignore", "[5/5] requirement.md"]
 
 
+def test_generated_unicode_requirement_uses_utf8(source, plan, monkeypatch):
+    requirement = REQUIREMENT + "\nUnicode examples: user’s 中文 café\n"
+    writes = []
+    original_write_text = Path.write_text
+
+    def tracked_write_text(path, data, *args, **kwargs):
+        if path.name in {"candidate", "requirement.md"}:
+            encoding = kwargs.get("encoding", args[0] if args else None)
+            writes.append((path.name, encoding))
+        return original_write_text(path, data, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", tracked_write_text)
+    result = build(source, plan, client=Client(plan, files={**FILES, "requirement.md": requirement}))
+
+    assert result.status == "generated"
+    assert (source.directory / "requirement.md").read_text(encoding="utf-8") == requirement
+    assert ("candidate", "utf-8") in writes
+    assert ("requirement.md", "utf-8") in writes
+
+
 def test_failure_preserves_completed_files_and_retry_resumes_without_replanning(source, plan):
     broken = {**FILES, "Dockerfile": "FROM python:3.11\nRUN pip install ./agent\nCOPY agent/ ./agent/\nUSER agent"}
     first = Client(plan, files=broken)

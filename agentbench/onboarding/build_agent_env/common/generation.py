@@ -22,7 +22,7 @@ def run_step(step, session, checkpoint, index, total):
         try:
             if not target.is_file() or target.stat().st_size > session.settings.max_response_bytes:
                 raise BuildError("Existing file is not a bounded regular file")
-            content = target.read_text()
+            content = target.read_text(encoding="utf-8")
             if contains_secret(content, session.environ):
                 raise BuildError("Existing file contains credentials and cannot be sent to the model")
             step.validate(content, session)
@@ -48,7 +48,7 @@ def run_step(step, session, checkpoint, index, total):
 
 def generate_file(step, session, stage, prefix):
     """Retry only this response with validator feedback, keeping earlier files."""
-    schema = json.loads((step.response_schema or SCHEMA).read_text())
+    schema = json.loads((step.response_schema or SCHEMA).read_text(encoding="utf-8"))
     schema["properties"]["path"]["enum"] = [step.path]
     base_payload = {**session.payload(), **step.request_data, "target_path": step.path}
     payload = base_payload
@@ -67,7 +67,7 @@ def generate_file(step, session, stage, prefix):
                 raise BuildError("Rendered file contains credentials")
             if not content.strip():
                 raise BuildError("Generated file content is empty")
-            (stage / "candidate").write_text(content)
+            (stage / "candidate").write_text(content, encoding="utf-8")
             step.validate(content, session)
             return content
         except BuildPaused:
